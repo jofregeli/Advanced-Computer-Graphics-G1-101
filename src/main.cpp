@@ -54,7 +54,7 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
 
     //Task 5.3
-    //Material* mirror = new Mirror();
+    Material* mirror = new Mirror();
     //Task 5.4
     //Material* transmissive = new Transmissive(0.7);
 
@@ -228,6 +228,7 @@ int main()
     Shader *depthshader = new DepthShader (intersectionColor,7.5f, bgColor);
     //(... normal, whitted) ...
     Shader* normalShader = new NormalIntegrator(bgColor);
+	Shader* whittedShader = new WhittedIntegrator(bgColor, 0.1, 5);
 
 
   
@@ -238,17 +239,18 @@ int main()
     Camera* cam;
     Scene myScene;
     //Create Scene Geometry and Illumiantion
-    buildSceneSphere(cam, film, myScene); //Task 2,3,4;
-    //buildSceneCornellBox(cam, film, myScene); //Task 5
+    //buildSceneSphere(cam, film, myScene); //Task 2,3,4;
+    buildSceneCornellBox(cam, film, myScene); //Task 5
 
     //---------------------------------------------------------------------------
 
     //Paint Image ONLY TASK 1
-    PaintImage(film);
+    //PaintImage(film);
 
     // Launch some rays! TASK 2,3,...   
     auto start = high_resolution_clock::now();
-    raytrace(cam, normalShader, film, myScene.objectsList, myScene.LightSourceList);
+    //raytrace(cam, normalShader, film, myScene.objectsList, myScene.LightSourceList);
+    raytrace(cam, whittedShader, film, myScene.objectsList, myScene.LightSourceList);
     auto stop = high_resolution_clock::now();
 
     
