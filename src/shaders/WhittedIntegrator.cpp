@@ -30,6 +30,31 @@ Vector3D WhittedIntegrator::computeColor(
 
     Vector3D Lo(0.0);
 
+
+
+    if (mat->hasSpecular() && !mat->hasDiffuseOrGlossy() && !mat->hasTransmission()) { // solo espejo perfecto
+        if (r.depth >= maxDepth) return Vector3D(0.0); // límite de profundidad
+
+        // Vector incidente hacia la superficie    if (mat->hasSpecular() && !mat->hasDiffuseOrGlossy() && !mat->hasTransmission()) { // solo espejo perfecto
+        if (r.depth >= maxDepth) return Vector3D(0.0); // límite de profundidad
+
+        // Vector incidente hacia la superficie
+        const Vector3D wi_in = -wo;
+        const double ndotI = dot(n, wi_in);
+        Vector3D wr = (n * (2.0 * ndotI)) - wi_in; // reflect direction
+        wr.normalized();
+
+        Ray reflRay(safeOffsetPoint(p, n), wr);
+        reflRay.minT = 1e-4;
+        reflRay.maxT = std::numeric_limits<double>::infinity();
+        reflRay.depth = r.depth + 1;
+
+        // Pure mirror: return only reflected color
+        return computeColor(reflRay, objList, lsList);
+    }
+
+
+
     // Ambient (Eq. 7)
     if (ambient > 0.0 && mat->hasDiffuseOrGlossy()) {
         Lo += mat->getDiffuseReflectance() * ambient;                  // at * ρd
