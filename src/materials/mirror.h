@@ -7,10 +7,8 @@ class Mirror : public Material {
 public:
     Mirror() {}
 
-    // Implementación obligatoria de la función virtual pura
     Vector3D getReflectance(const Vector3D& n, const Vector3D& wo, const Vector3D& wi) const override {
-        // Un espejo ideal no tiene reflectancia difusa ni glossy, solo especular perfecta.
-        // Retorna un vector nulo o puedes retornar la dirección reflejada si lo necesitas.
+       
         return Vector3D(0.0);
     }
 

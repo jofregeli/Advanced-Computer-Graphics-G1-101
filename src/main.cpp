@@ -58,7 +58,7 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     //Task 5.3
     Material* mirror = new Mirror();
     //Task 5.4
-    Material* transmissive = new Transmissive(1.5);
+    Material* transmissive = new Transmissive(0.7);
 
 
     /* ******* */
@@ -72,6 +72,7 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Shape* topPlan = new InfinitePlan(Vector3D(0, offset, 0), Vector3D(0, -1, 0), greyDiffuse);
     Shape* bottomPlan = new InfinitePlan(Vector3D(0, -offset, 0), Vector3D(0, 1, 0), greyDiffuse);
     Shape* backPlan = new InfinitePlan(Vector3D(0, 0, 3 * offset), Vector3D(0, 0, -1), greyDiffuse);
+    /*Shape* backPlan = new InfinitePlan(Vector3D(0, 0, 3 * offset), Vector3D(0, 0, -1), mirror);*/
 
     myScene.AddObject(leftPlan);
     myScene.AddObject(rightPlan);
@@ -96,8 +97,12 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     myScene.AddObject(s2);
     myScene.AddObject(square);
 
-    PointLightSource* myPointLight = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2.0));
-    myScene.AddPointLight(myPointLight);
+    PointLightSource* myPointLight1 = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2,2,2));
+
+    //PointLightSource* myPointLight2 = new PointLightSource(Vector3D(2.5, 0, 3.0), Vector3D(0,3,0));
+    myScene.AddPointLight(myPointLight1);
+    //myScene.AddPointLight(myPointLight2);
+
 
 }
 

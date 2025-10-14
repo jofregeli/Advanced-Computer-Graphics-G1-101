@@ -23,7 +23,7 @@ public:
 
 
 private:
-    Vector3D rho_d;
+    Vector3D pd;
     Vector3D Ks;
     float    alpha;
     

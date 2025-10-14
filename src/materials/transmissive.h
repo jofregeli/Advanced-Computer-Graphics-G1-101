@@ -23,7 +23,7 @@ public:
     double   getIndexOfRefraction()  const override { return eta; }
 
 private:
-    double eta; // material IOR (?2). Air is ?1 = 1.0
+    double eta; 
 };
 
 #endif // TRANSMISSIVE_H
