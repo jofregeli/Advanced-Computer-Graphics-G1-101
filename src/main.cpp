@@ -54,7 +54,8 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Material* blueGlossy_20 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.8, 0.8, 0.8), 20);
     Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.8, 0.8, 0.8), 80);
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
-
+   
+    Material* gold = new Phong( Vector3D(0.55f, 0.43f, 0.10f), Vector3D(1.00f, 0.86f, 0.23f), 10.0f ); // We define the new mateiral gold. 
     //Task 5.3
     Material* mirror = new Mirror();
     //Task 5.4
@@ -93,10 +94,12 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
 
     Shape* square = new Square(Vector3D(offset + 0.999, -offset-0.2, 3.0), Vector3D(0.0, 4.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(-1.0, 0.0, 0.0), mirror);
 
+	Shape* new_object = new Sphere(0.75, Matrix4x4::translate(Vector3D(0.0, -offset + 0.75, 5.5)), gold);  // We create a new sphere with the gold material.
+
     myScene.AddObject(s1);
     myScene.AddObject(s2);
     myScene.AddObject(square);
-
+	myScene.AddObject(new_object); // We add the new object to the scene.
     PointLightSource* myPointLight1 = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2,2,2));
 
     //PointLightSource* myPointLight2 = new PointLightSource(Vector3D(2.5, 0, 3.0), Vector3D(0,3,0));
