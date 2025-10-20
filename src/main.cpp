@@ -50,17 +50,14 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     /* ********* */
     Material* redDiffuse = new Phong(Vector3D(0.7, 0.2, 0.3), Vector3D(0, 0, 0), 100);
     Material* greenDiffuse = new Phong(Vector3D(0.2, 0.7, 0.3), Vector3D(0, 0, 0), 100);
-    Material* greyDiffuse = new Phong(Vector3D(0.8, 0.8, 0.8), Vector3D(0, 0, 0), 100);      
-    Material* blueGlossy_20 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.8, 0.8, 0.8), 20);
-    Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.8, 0.8, 0.8), 80);
+    Material* greyDiffuse = new Phong(Vector3D(0.8, 0.8, 0.8), Vector3D(0, 0, 0), 100);
+    Material* blueGlossy_20 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.2, 0.2, 0.2), 20);
+    Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.2, 0.2, 0.2), 80);
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
-   
-    Material* gold = new Phong( Vector3D(0.55f, 0.43f, 0.10f), Vector3D(1.00f, 0.86f, 0.23f), 10.0f ); // We define the new mateiral gold. 
-    //Task 5.3
-    Material* mirror = new Mirror();
-    //Task 5.4
-    Material* transmissive = new Transmissive(0.7);
+    Material* emissive = new Emissive(Vector3D(5, 5, 5), Vector3D(0.5));
 
+    Material* mirror = new Mirror();
+    Material* transmissive = new Transmissive(0.7);
 
     /* ******* */
     /* Objects */
@@ -73,42 +70,33 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Shape* topPlan = new InfinitePlan(Vector3D(0, offset, 0), Vector3D(0, -1, 0), greyDiffuse);
     Shape* bottomPlan = new InfinitePlan(Vector3D(0, -offset, 0), Vector3D(0, 1, 0), greyDiffuse);
     Shape* backPlan = new InfinitePlan(Vector3D(0, 0, 3 * offset), Vector3D(0, 0, -1), greyDiffuse);
-    /*Shape* backPlan = new InfinitePlan(Vector3D(0, 0, 3 * offset), Vector3D(0, 0, -1), mirror);*/
+    Shape* square_emissive = new Square(Vector3D(-1.0, 3.0, 3.0), Vector3D(2.0, 0.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(0.0, -1.0, 0.0), emissive);
+
 
     myScene.AddObject(leftPlan);
     myScene.AddObject(rightPlan);
     myScene.AddObject(topPlan);
     myScene.AddObject(bottomPlan);
     myScene.AddObject(backPlan);
+    myScene.AddObject(square_emissive);
 
 
-    // Place the Spheres and square inside the Cornell Box
-    double radius = 1;         
+    // Place the Spheres inside the Cornell Box
+    double radius = 1;
     Matrix4x4 sphereTransform1;
     sphereTransform1 = Matrix4x4::translate(Vector3D(1.5, -offset + radius, 6));
-    Shape* s1 = new Sphere(radius, sphereTransform1, blueGlossy_20); 
+    Shape* s1 = new Sphere(radius, sphereTransform1, blueGlossy_20);
 
     Matrix4x4 sphereTransform2;
-    sphereTransform2 = Matrix4x4::translate(Vector3D(-1.5, -offset + 3*radius, 4));
+    sphereTransform2 = Matrix4x4::translate(Vector3D(-1.5, -offset + 3 * radius, 4));
     Shape* s2 = new Sphere(radius, sphereTransform2, transmissive);
 
-    Shape* square = new Square(Vector3D(offset + 0.999, -offset-0.2, 3.0), Vector3D(0.0, 4.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(-1.0, 0.0, 0.0), mirror);
-
-	Shape* new_object = new Sphere(0.75, Matrix4x4::translate(Vector3D(0.0, -offset + 0.75, 5.5)), gold);  // We create a new sphere with the gold material.
+    Shape* square = new Square(Vector3D(offset + 0.999, -offset - 0.2, 3.0), Vector3D(0.0, 4.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(-1.0, 0.0, 0.0), mirror);
 
     myScene.AddObject(s1);
     myScene.AddObject(s2);
     myScene.AddObject(square);
-	myScene.AddObject(new_object); // We add the new object to the scene.
-    PointLightSource* myPointLight1 = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2,2,2));
-
-    //PointLightSource* myPointLight2 = new PointLightSource(Vector3D(2.5, 0, 3.0), Vector3D(0,3,0));
-    myScene.AddPointLight(myPointLight1);
-    //myScene.AddPointLight(myPointLight2);
-
-
 }
-
 
 void buildSceneSphere(Camera*& cam, Film*& film,
     Scene myScene)

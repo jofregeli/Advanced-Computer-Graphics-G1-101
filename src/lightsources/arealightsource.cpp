@@ -17,6 +17,15 @@ Vector3D AreaLightSource::sampleLightPosition()   const
     //FILL(...)
     // 
     //New Randam Pos inside Area Lightsource
-    return Vector3D(0.0);
+
+
+
+    //Select random point: 
+
+    float x = rand() / (float) RAND_MAX *myAreaLightsource->v1.length();
+
+	float y = rand() / (float) RAND_MAX *myAreaLightsource->v2.length();
+    
+    return  Vector3D(x, y, 0);
 }
 

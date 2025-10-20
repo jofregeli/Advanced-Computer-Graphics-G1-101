@@ -21,11 +21,17 @@ public:
     Vector3D getEmissiveRadiance() const;
     Vector3D getDiffuseReflectance() const;
 
-
+    
 private:
-    Vector3D pd;
+    Vector3D kd;
     Vector3D Ks;
-    float    alpha;
+    float alpha;
+
+
+    // LAB 1
+    //Vector3D pd;
+    //Vector3D Ks;
+    //float alpha;
     
 
 };
