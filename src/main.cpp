@@ -18,6 +18,7 @@
 #include "shaders/depthshader.h"
 #include "shaders/normalintegrator.h"
 #include "shaders/whittedintegrator.h"
+#include "shaders/hemisphericalintegrator.h"
 
 
 
@@ -54,7 +55,7 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Material* blueGlossy_20 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.2, 0.2, 0.2), 20);
     Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.8), Vector3D(0.2, 0.2, 0.2), 80);
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
-    Material* emissive = new Emissive(Vector3D(5, 5, 5), Vector3D(0.5));
+    Material* emissive = new Emissive(Vector3D(25, 25, 25), Vector3D(0.5));
 
     Material* mirror = new Mirror();
     Material* transmissive = new Transmissive(0.7);
@@ -227,6 +228,7 @@ int main()
     //(... normal, whitted) ...
     Shader* normalShader = new NormalIntegrator(bgColor);
 	Shader* whittedShader = new WhittedIntegrator(bgColor, 0.1, 5);
+	Shader* hemisphericalShader = new HemisphericalIntegrator(bgColor);
 
 
   
@@ -248,7 +250,9 @@ int main()
     // Launch some rays! TASK 2,3,...   
     auto start = high_resolution_clock::now();
     //raytrace(cam, normalShader, film, myScene.objectsList, myScene.LightSourceList);
-    raytrace(cam, whittedShader, film, myScene.objectsList, myScene.LightSourceList);
+    //raytrace(cam, whittedShader, film, myScene.objectsList, myScene.LightSourceList);
+
+    raytrace(cam, hemisphericalShader, film, myScene.objectsList, myScene.LightSourceList);
     auto stop = high_resolution_clock::now();
 
     

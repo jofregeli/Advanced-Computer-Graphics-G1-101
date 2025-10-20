@@ -1,16 +1,19 @@
-        #pragma once
+#ifndef HEMISPHERICALINTEGRATOR_H
+#define HEMISPHERICALINTEGRATOR_H
 
-#include <vector>
+#include "shader.h"
 
-class HemisphericalIntegrator {
+class HemisphericalIntegrator : public Shader {
 public:
     HemisphericalIntegrator();
     explicit HemisphericalIntegrator(const Vector3D bgColor_);
 
-    Vector3D computeColor(const Ray& r,
+    virtual Vector3D computeColor(const Ray& r,
                           const std::vector<Shape*>& objList,
-                          const std::vector<LightSource*>& lsList, int N) const;
+                          const std::vector<LightSource*>& lsList) const override;
 
 private:
-    Vector3D bgColor;
+    // bgColor ya está en Shader, no es necesario aquí
 };
+
+#endif
