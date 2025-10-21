@@ -1,4 +1,4 @@
-﻿#include "hemisphericalintegrator.h"
+﻿#include "AreaDirectIlluminationIntegrator.h"
 
 #include "../core/utils.h"
 #include "../core/intersection.h"
@@ -6,79 +6,93 @@
 #include "../materials/material.h"
 #include "../lightsources/lightsource.h"
 #include "../core/hemisphericalsampler.h"
+#include "../lightsources/arealightsource.h"
 
 
 #include <algorithm>
 #include <cmath>
 #include <limits>
 
-HemisphericalIntegrator::HemisphericalIntegrator()
+AreaDirectIlluminationIntegrator::AreaDirectIlluminationIntegrator()
     : Shader(Vector3D(0.0)) { }
 
-HemisphericalIntegrator::HemisphericalIntegrator(const Vector3D bgColor_)
+AreaDirectIlluminationIntegrator::AreaDirectIlluminationIntegrator(const Vector3D bgColor_)
     : Shader(bgColor_) { }
 
 
-Vector3D HemisphericalIntegrator::computeColor(const Ray& r,
+Vector3D AreaDirectIlluminationIntegrator::computeColor(const Ray& r,
     const std::vector<Shape*>& objList,
     const std::vector<LightSource*>& lsList) const
 {
-    int N = 256;
+    int N = 100;
     Intersection hit;
     HemisphericalSampler sampler;
-    Vector3D L_tot = (0, 0, 0);
+    Vector3D L_tot = (0,0,0);
 
     if (!Utils::getClosestIntersection(r, objList, hit)) {
         return bgColor;
     }
 
+
+    
+
     const Material& material = hit.shape->getMaterial();
     const Vector3D hit_normal = hit.normal.normalized();
     const Vector3D hit_point = hit.itsPoint; // ¡no normalizar puntos!
+
     Vector3D L_e = 0;
     Vector3D wo = (-r.d).normalized();
+
     Vector3D sum_Lo_dir = 0;
 
-    // La emisión debe sumarse siempre que el material sea emisivo
-    if (material.isEmissive()) {
-        L_e = material.getEmissiveRadiance();
-    }
-
     if (material.hasDiffuseOrGlossy()) {
-        // Un único bucle de muestreo (evita N*N iteraciones)
-        for (int s = 0; s < N; ++s) {
-            Intersection hit_dir;
+        if (material.isEmissive()) {
+            L_e = material.getEmissiveRadiance();
+        }
 
-            Vector3D wi = sampler.getSample(hit_normal).normalized();
+        for (const LightSource* light : lsList) {   //We iterate for each light in the scene
+            for (int j = 0; j < N; ++j) {
+           
 
-            Ray new_ray;
-            new_ray.o = hit_point + hit_normal * Epsilon; // desplazar a lo largo de la normal
-            new_ray.d = wi;
-            new_ray.minT = Epsilon;
-            new_ray.maxT = std::numeric_limits<double>::infinity();
+    
+                Vector3D light_position = light->sampleLightPosition();
 
-            // Visibilidad: si no toca nada, contribución 0 (no abortar el píxel)
-            if (!Utils::getClosestIntersection(new_ray, objList, hit_dir)) {
-                continue;
+                Vector3D wi = (light_position - hit.itsPoint).normalized();
+
+                Vector3D Li = 0;
+                Li = light->getIntensity();
+                
+
+                // BRDF del punto actual (no del punto y) y con orden correcto (n, wo, wi)
+                Vector3D f_r = material.getReflectance(hit_normal, wo, wi);
+
+				float equation_part = (hit.itsPoint - light_position).length();
+                Vector3D Gxy = (dot(hit_normal, wi.normalized()) * dot(-wi.normalized(), light->getNormal())) / pow(equation_part, 2);
+                Vector3D Vxy;
+
+
+                Vector3D L = light_position - hit.itsPoint; //We get the vector from the intersection point to the light source
+                const double dist = L.length();
+                const Vector3D shadowOrigin = hit.itsPoint; // Small offset to avoid self-intersection
+                Ray shadowRay(shadowOrigin, wi, 0, Epsilon, dist - Epsilon);
+                if (Utils::hasIntersection(shadowRay, objList)) {
+                    Vxy = 0;
+
+                }
+                else {
+                    Vxy = 1;
+                }
+
+                int A = light->getArea();
+                Vector3D contrib = (Li * f_r) * (Gxy * Vxy) * (A);
+               
+
+
+                sum_Lo_dir += contrib;
             }
-
-            Vector3D Li = 0;
-            const Material& material_y = hit_dir.shape->getMaterial();
-            if (material_y.isEmissive()) {
-                Li = material_y.getEmissiveRadiance();
-            }
-
-            // BRDF del punto actual (no del punto y) y con orden correcto (n, wo, wi)
-            Vector3D f_r = material.getReflectance(hit_normal, wo, wi);
-
-            double cosTheta = std::max(0.0, dot(wi, hit_normal));
-
-            // Estimador MC para muestreo uniforme del hemisferio: pdf = 1/(2π)
-            Vector3D contrib = (Li * f_r) * (cosTheta * 2 * 3.1415926535);
-
-            sum_Lo_dir += contrib;
         }
     }
+
     if (material.hasSpecular()) { //This is done for the mirror material
         const Vector3D wr = (r.d - 2.0 * dot(r.d, hit_normal) * hit_normal).normalized(); //We get the reflection direction
         Ray reflRay(hit.itsPoint + hit_normal * Epsilon, wr, r.depth + 1); //We create the reflection ray with a small offset to avoid problems

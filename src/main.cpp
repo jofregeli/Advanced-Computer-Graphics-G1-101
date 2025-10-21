@@ -19,6 +19,7 @@
 #include "shaders/normalintegrator.h"
 #include "shaders/whittedintegrator.h"
 #include "shaders/hemisphericalintegrator.h"
+#include "shaders/areadirectilluminationintegrator.h"
 
 
 
@@ -229,6 +230,7 @@ int main()
     Shader* normalShader = new NormalIntegrator(bgColor);
 	Shader* whittedShader = new WhittedIntegrator(bgColor, 0.1, 5);
 	Shader* hemisphericalShader = new HemisphericalIntegrator(bgColor);
+	Shader* AreaDirectIlluminationShader = new AreaDirectIlluminationIntegrator(bgColor);
 
 
   
@@ -252,7 +254,7 @@ int main()
     //raytrace(cam, normalShader, film, myScene.objectsList, myScene.LightSourceList);
     //raytrace(cam, whittedShader, film, myScene.objectsList, myScene.LightSourceList);
 
-    raytrace(cam, hemisphericalShader, film, myScene.objectsList, myScene.LightSourceList);
+    raytrace(cam, AreaDirectIlluminationShader, film, myScene.objectsList, myScene.LightSourceList);
     auto stop = high_resolution_clock::now();
 
     
