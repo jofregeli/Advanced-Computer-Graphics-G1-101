@@ -24,7 +24,7 @@ Vector3D AreaDirectIlluminationIntegrator::computeColor(const Ray& r,
     const std::vector<Shape*>& objList,
     const std::vector<LightSource*>& lsList) const
 {
-    int N = 100;
+    int N = 256;
     Intersection hit;
     HemisphericalSampler sampler;
     Vector3D L_tot = (0,0,0);

@@ -54,8 +54,6 @@ Vector3D HemisphericalIntegrator::computeColor(const Ray& r,
             Ray new_ray;
             new_ray.o = hit_point + hit_normal * Epsilon; // desplazar a lo largo de la normal
             new_ray.d = wi;
-            new_ray.minT = Epsilon;
-            new_ray.maxT = std::numeric_limits<double>::infinity();
 
             // Visibilidad: si no toca nada, contribución 0 (no abortar el píxel)
             if (!Utils::getClosestIntersection(new_ray, objList, hit_dir)) {
