@@ -12,8 +12,8 @@ public:
                           const std::vector<Shape*>& objList,
                           const std::vector<LightSource*>& lsList) const override;
 
-    Vector3D  ReflectedRadiance(Intersection x, Vector3D wo, int depth, const std::vector<Shape*>& objList, LightSource* light) const;
-    Vector3D DirectRadiance(Intersection x, Vector3D wo, LightSource* light) const;
+    Vector3D ReflectedRadiance(Intersection x, Vector3D wo, int depth, const std::vector<Shape*>& objList, LightSource* light) const;
+    Vector3D DirectRadiance(Intersection x, Vector3D wo, LightSource* light, const std::vector<Shape*>& objList) const;
     Vector3D IndirectRadiance(Intersection x, Vector3D wo, int depth, const std::vector<Shape*>& objList, LightSource* light) const;
 
 private:
